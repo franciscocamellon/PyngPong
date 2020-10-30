@@ -66,6 +66,11 @@ class Main_Game():
                 if event.type == pygame.QUIT:
                     pygame.quit()
                     sys.exit()
+                elif event.type == MOUSEMOTION:
+                    mouseX, mouseY = event.pos
+                    player_one.y = mouseY
+                    pygame.mouse.set_visible(0)
+                    
 
             court().create_court(self.SCREEN)
             player().create_player(self.SCREEN, player_one)
