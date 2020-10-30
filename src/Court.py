@@ -75,11 +75,11 @@ class Pong_Player(Tenis_Court):
         position = (self.SCREEN_HEIGHT - self.PLAYER_SIZE)//2
         return position
 
-    def create_score(self, screen, score, font):
+    def create_score(self, screen, score, font, position):
         """ Docstring """
         score_result = font.render('score = %s' %(score), True, self.COLOR)
         score_result_rect = score_result.get_rect()
-        score_result_rect.topleft = ((self.SCREEN_WIDTH - 150), 25)
+        score_result_rect.topleft = (position)
         return screen.blit(score_result, score_result_rect)
 
 
@@ -124,17 +124,28 @@ class Movements(Tenis_Court):
         elif x_dir == 1 and player_two.left == ball.right and player_two.top < ball.top and player_two.bottom > ball.bottom:
             return -1
         
-    def compute_score(self, player_one, ball, score, x_dir):
+    def compute_score(self, player, ball, score, x_dir, player_one=False, player_two=False):
         """ Docstring """
-        if ball.left == self.BORDER_SIZE:
-            score = 0
+        if player_one and ball.left == self.BORDER_SIZE + 50:
+            score -= score
             return score
-        elif ball.right == self.SCREEN_WIDTH - self.BORDER_SIZE:
+        elif player_one and ball.right == self.SCREEN_WIDTH - self.BORDER_SIZE:
             score += 10
             return score
         #verify a ball collision
-        elif x_dir == 1 and player_one.right == ball.left and player_one.top < ball.top and player_one.bottom > ball.bottom:
+        elif player_one and x_dir == 1 and player.right == ball.left and player.top < ball.top and player.bottom > ball.bottom:
             score += 1
             return score
-        # else:
-        #     return score
+        
+        elif player_two and ball.left == self.BORDER_SIZE + 50:
+            score += 10
+            return score
+        elif player_two and ball.right == self.SCREEN_WIDTH - self.BORDER_SIZE:
+            score -= score
+            return score
+        #verify a ball collision
+        elif player_two and x_dir == 1 and player.right == ball.left and player.top < ball.top and player.bottom > ball.bottom:
+            score += 1
+            return score
+        else:
+            return score

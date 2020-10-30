@@ -30,7 +30,8 @@ class Main_Game():
         self.finish = False
         self.ball_x_dir = -1
         self.ball_y_dir = -1
-        self.score = 0
+        self.score_player_one = 0
+        self.score_player_two = 0
 
     def init_game(self):
         """ Docstring """
@@ -96,8 +97,10 @@ class Main_Game():
             # a = mov().ball_collision(_ball, player_one, player_two, self.ball_x_dir)
             # print('a: ',a)
             player_two = mov().computer_movements(_ball, self.ball_x_dir, player_two)
-            self.score = mov().compute_score(player_one, _ball, self.score, self.ball_x_dir)
-            player().create_score(self.SCREEN, self.score, self.FONT)
+            self.score_player_one = mov().compute_score(player_one, _ball, self.score_player_one, self.ball_x_dir, True)
+            self.score_player_two = mov().compute_score(player_two, _ball, self.score_player_two, self.ball_x_dir)
+            player().create_score(self.SCREEN, self.score_player_one, self.FONT, (100,15))
+            player().create_score(self.SCREEN, self.score_player_two, self.FONT, (300,15))
 
             # Atualiza o desenho na tela
             pygame.display.update()
