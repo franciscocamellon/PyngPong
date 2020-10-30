@@ -1,12 +1,13 @@
 # -*- coding: utf-8 -*-
 
-import pygame, sys
+import pygame
+import sys
 from pygame.locals import *
 
 from src.Court import Tenis_Court as court
 from src.Court import Pong_Player as player
 from src.Court import Pong_Ball as ball
-from src.Motion import Movements as mov
+from src.Court import Movements as mov
 
 
 class Main_Game():
@@ -23,18 +24,21 @@ class Main_Game():
             (self.SCREEN_WIDTH, self.SCREEN_HEIGHT))
         self.FPS = 200
         self.FPSCLOCK = pygame.time.Clock()
+        self.BORDER_SIZE = 5
         self.finish = False
         self.ball_x_dir = -1
         self.ball_y_dir = -1
-        
 
     def init_game(self):
         """ Docstring """
-        
-        self.ball_x_pos = ball().ball_position()[0]
-        self.ball_y_pos = ball().ball_position()[1]
 
-        print(self.ball_x_pos, self.ball_y_pos)
+        # self.ball_x_pos = ball().ball_position()[0]
+        # self.ball_y_pos = ball().ball_position()[1]
+
+        self.ball_x_pos = 245
+        self.ball_y_pos = 195
+
+        # print(self.ball_x_pos, self.ball_y_pos)
 
         player_one_pos = player().player_position(self.SCREEN_HEIGHT)
         player_two_pos = player().player_position(self.SCREEN_HEIGHT)
@@ -43,20 +47,18 @@ class Main_Game():
 
         player_one = pygame.Rect(70, player_one_pos, 5, 50)
         player_two = pygame.Rect((430), player_two_pos, 5, 50)
-        _ball = pygame.Rect(self.ball_x_pos, self.ball_x_pos, 5, 5)
+        # _ball = pygame.Rect(self.ball_x_pos, self.ball_x_pos, 5, 5)
+        _ball = pygame.Rect(245, 195, 5, 5)
 
-        print(player_one, player_two)
-
-        ball().create_ball(self.SCREEN, _ball)
+        # print(player_one, player_two)
 
         court().create_court(self.SCREEN)
         player().create_player(self.SCREEN, player_one)
         player().create_player(self.SCREEN, player_two)
-        # ball = court().ball(self.screen, (150,175), 5)
-        
-
+        ball().create_ball(self.SCREEN, _ball)
 
         while True:
+            self.SCREEN.fill((0, 0, 0))
 
             # Checar os eventos do mouse aqui:
             for event in pygame.event.get():
@@ -66,18 +68,20 @@ class Main_Game():
                     sys.exit()
 
             court().create_court(self.SCREEN)
-            # court().player(self.screen, (70,175), (70,225))
-            # court().player(self.screen, (430,175), (430,225))
-            # ball = court().ball(self.screen, (150,175), 5)
+            player().create_player(self.SCREEN, player_one)
+            player().create_player(self.SCREEN, player_two)
+            ball().create_ball(self.SCREEN, _ball)
 
-            # ball = mov().ball_movement(ball, self.x_pos, self.y_pos)
+            _ball = mov().ball_movement(_ball, self.ball_x_dir, self.ball_y_dir)
+            self.ball_x_dir, self.ball_y_dir = mov().verify_collision( _ball,
+                                                                      self.ball_x_dir,
+                                                                      self.ball_y_dir)
 
             # Atualiza o desenho na tela
             pygame.display.update()
 
             # Configura 200 atualizações de tela por segundo
             self.FPSCLOCK.tick(self.FPS)
-        
 
 
 Main_Game().init_game()

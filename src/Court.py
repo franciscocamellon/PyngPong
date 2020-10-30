@@ -14,6 +14,7 @@ class Tenis_Court():
         self.PLAYER_SIZE = 50
         self.BORDER_SIZE = 5
         self.BORDER_OFFSET = 20
+        self.COURT_OFFSET = 50
         self.COLOR = (255, 255, 255)
 
     def create_court(self, screen):
@@ -42,7 +43,6 @@ class Pong_Ball(Tenis_Court):
         # ball = pygame.draw.circle(
         #     screen, self.COLOR, center, self.RADIUS, width=0)
         pygame.draw.rect(screen, self.COLOR, rect)
-        
 
     def ball_position(self):
         """ Docstring """
@@ -91,8 +91,10 @@ class Movements(Tenis_Court):
 
     def verify_collision(self, ball, x_dir, y_dir):
         """ Docstring """
-        if ball.top == (50+self.BORDER_SIZE) or ball.bottom == (self.SCREEN_HEIGHT - self.BORDER_SIZE + 50):
+        if ball.top == (self.COURT_OFFSET + self.BORDER_SIZE) or \
+            ball.bottom == (self.SCREEN_HEIGHT - self.BORDER_SIZE + self.COURT_OFFSET):
             y_dir *= -1
-        if ball.left == (self.BORDER_SIZE) or ball.right == (self.SCREEN_WIDTH - self.BORDER_SIZE):
+        if ball.left == (self.COURT_OFFSET + self.BORDER_SIZE) or \
+            ball.right == (self.SCREEN_WIDTH - self.BORDER_SIZE + self.COURT_OFFSET):
             x_dir *= -1
         return x_dir, y_dir
