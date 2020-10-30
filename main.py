@@ -18,6 +18,8 @@ class Main_Game():
 
         pygame.init()
         pygame.display.set_caption('Crazy Snake Pong - from Francisco Camello')
+        self.FONTSIZE = 20
+        self.FONT = pygame.font.Font('freesansbold.ttf', self.FONTSIZE)
         self.SCREEN_WIDTH = 500
         self.SCREEN_HEIGHT = 400
         self.SCREEN = pygame.display.set_mode(
@@ -28,6 +30,7 @@ class Main_Game():
         self.finish = False
         self.ball_x_dir = -1
         self.ball_y_dir = -1
+        self.score = 0
 
     def init_game(self):
         """ Docstring """
@@ -40,8 +43,8 @@ class Main_Game():
 
         # print(self.ball_x_pos, self.ball_y_pos)
 
-        player_one_pos = player().player_position(self.SCREEN_HEIGHT)
-        player_two_pos = player().player_position(self.SCREEN_HEIGHT)
+        player_one_pos = player().player_position()
+        player_two_pos = player().player_position()
 
         # print(player_one_pos, player_two_pos)
 
@@ -53,9 +56,10 @@ class Main_Game():
         # print(player_one, player_two)
 
         court().create_court(self.SCREEN)
-        player().create_player(self.SCREEN, player_one)
-        player().create_player(self.SCREEN, player_two)
+        player().create_player(self.SCREEN, self.SCREEN_HEIGHT, player_one)
+        player().create_player(self.SCREEN, self.SCREEN_HEIGHT, player_two)
         ball().create_ball(self.SCREEN, _ball)
+
 
         while True:
             self.SCREEN.fill((0, 0, 0))
@@ -73,14 +77,27 @@ class Main_Game():
                     
 
             court().create_court(self.SCREEN)
-            player().create_player(self.SCREEN, player_one)
-            player().create_player(self.SCREEN, player_two)
+            player().create_player(self.SCREEN, self.SCREEN_HEIGHT, player_one)
+            player().create_player(self.SCREEN, self.SCREEN_HEIGHT, player_two)
             ball().create_ball(self.SCREEN, _ball)
 
             _ball = mov().ball_movement(_ball, self.ball_x_dir, self.ball_y_dir)
             self.ball_x_dir, self.ball_y_dir = mov().verify_collision( _ball,
                                                                       self.ball_x_dir,
                                                                       self.ball_y_dir)
+            new_dir = mov().ball_collision(_ball, player_one, player_two, self.ball_x_dir)
+            if new_dir == 1:
+                self.ball_x_dir = self.ball_x_dir * new_dir
+            elif new_dir == -1:
+                self.ball_x_dir = self.ball_x_dir * new_dir
+            else:
+                self.ball_x_dir = self.ball_x_dir
+            # self.ball_x_dir = self.ball_x_dir * mov().ball_collision(_ball, player_one, player_two, self.ball_x_dir)
+            # a = mov().ball_collision(_ball, player_one, player_two, self.ball_x_dir)
+            # print('a: ',a)
+            player_two = mov().computer_movements(_ball, self.ball_x_dir, player_two)
+            self.score = mov().compute_score(player_one, _ball, self.score, self.ball_x_dir)
+            player().create_score(self.SCREEN, self.score, self.FONT)
 
             # Atualiza o desenho na tela
             pygame.display.update()
