@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 
-import pygame
-import sys
+import pygame, sys
 from pygame.locals import *
 
 from src.Court import Tenis_Court as court
@@ -27,14 +26,15 @@ class Main_Game():
         self.finish = False
         self.ball_x_dir = -1
         self.ball_y_dir = -1
+        
 
     def init_game(self):
         """ Docstring """
-
+        
         self.ball_x_pos = ball().ball_position()[0]
         self.ball_y_pos = ball().ball_position()[1]
 
-        # print(self.ball_x_pos, self.ball_y_pos)
+        print(self.ball_x_pos, self.ball_y_pos)
 
         player_one_pos = player().player_position(self.SCREEN_HEIGHT)
         player_two_pos = player().player_position(self.SCREEN_HEIGHT)
@@ -43,14 +43,18 @@ class Main_Game():
 
         player_one = pygame.Rect(70, player_one_pos, 5, 50)
         player_two = pygame.Rect((430), player_two_pos, 5, 50)
+        _ball = pygame.Rect(self.ball_x_pos, self.ball_x_pos, 5, 5)
 
-        # print(player_one, player_two)
+        print(player_one, player_two)
 
-        ball().create_ball(self.SCREEN, (self.ball_x_pos, self.ball_y_pos))
+        ball().create_ball(self.SCREEN, _ball)
 
         court().create_court(self.SCREEN)
         player().create_player(self.SCREEN, player_one)
         player().create_player(self.SCREEN, player_two)
+        # ball = court().ball(self.screen, (150,175), 5)
+        
+
 
         while True:
 
@@ -61,18 +65,19 @@ class Main_Game():
                     pygame.quit()
                     sys.exit()
 
-            # court().create_court(self.SCREEN)
-            # player().create_player(self.SCREEN, player_one)
-            # player().create_player(self.SCREEN, player_two)
-            # _ball = ball().create_ball(self.SCREEN, (self.ball_x_pos, self.ball_y_pos))
+            court().create_court(self.SCREEN)
+            # court().player(self.screen, (70,175), (70,225))
+            # court().player(self.screen, (430,175), (430,225))
+            # ball = court().ball(self.screen, (150,175), 5)
 
-            # ball = mov().ball_movement(_ball, self.ball_x_dir, self.ball_y_dir)
+            # ball = mov().ball_movement(ball, self.x_pos, self.y_pos)
 
-        # Atualiza o desenho na tela
-        pygame.display.update()
+            # Atualiza o desenho na tela
+            pygame.display.update()
 
-        # Configura 200 atualizações de tela por segundo
-        self.FPSCLOCK.tick(self.FPS)
+            # Configura 200 atualizações de tela por segundo
+            self.FPSCLOCK.tick(self.FPS)
+        
 
 
 Main_Game().init_game()

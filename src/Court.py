@@ -39,8 +39,9 @@ class Pong_Ball(Tenis_Court):
 
     def create_ball(self, screen, center):
         """ Docstring """
-        ball = pygame.draw.circle(
-            screen, self.COLOR, center, self.RADIUS, width=0)
+        # ball = pygame.draw.circle(
+        #     screen, self.COLOR, center, self.RADIUS, width=0)
+        ball = pygame.draw.rect(screen, self.COLOR, center)
         return ball
 
     def ball_position(self):
