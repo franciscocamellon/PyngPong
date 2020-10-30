@@ -37,12 +37,12 @@ class Pong_Ball(Tenis_Court):
         super().__init__()
         self.RADIUS = 5
 
-    def create_ball(self, screen, center):
+    def create_ball(self, screen, rect):
         """ Docstring """
         # ball = pygame.draw.circle(
         #     screen, self.COLOR, center, self.RADIUS, width=0)
-        ball = pygame.draw.rect(screen, self.COLOR, center)
-        return ball
+        pygame.draw.rect(screen, self.COLOR, rect)
+        
 
     def ball_position(self):
         """ Docstring """
@@ -74,3 +74,25 @@ class Pong_Player(Tenis_Court):
         """ Docstring """
         position = (screen_height - self.PLAYER_SIZE)//2
         return position
+
+
+class Movements(Tenis_Court):
+    """ Docstring """
+
+    def __init__(self):
+        """ Constructor """
+        super().__init__()
+
+    def ball_movement(self, ball, x_dir, y_dir):
+        """ Docstring """
+        ball.x += x_dir
+        ball.y += y_dir
+        return ball
+
+    def verify_collision(self, ball, x_dir, y_dir):
+        """ Docstring """
+        if ball.top == (50+self.BORDER_SIZE) or ball.bottom == (self.SCREEN_HEIGHT - self.BORDER_SIZE + 50):
+            y_dir *= -1
+        if ball.left == (self.BORDER_SIZE) or ball.right == (self.SCREEN_WIDTH - self.BORDER_SIZE):
+            x_dir *= -1
+        return x_dir, y_dir
