@@ -1,4 +1,5 @@
 {
-    "python.pythonPath": "d:\\Camello\\virtualenv\\Scripts\\python.exe",
-    "python.linting.pylintPath": "d:\\Camello\\virtualenv\\Scripts\\pylint.exe"
+    "python.pythonPath": "C:\\Users\\Francisco\\AppData\\Local\\Microsoft\\WindowsApps\\python.exe",
+    "python.linting.pylintEnabled": true,
+    "python.linting.enabled": true
 }

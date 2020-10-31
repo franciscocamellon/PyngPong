@@ -74,8 +74,8 @@ class Main_Game():
                 elif event.type == MOUSEMOTION:
                     mouseX, mouseY = event.pos
                     player_one.y = mouseY
-                    pygame.mouse.set_visible(0)
-                    
+                    pygame.mouse.set_visible(1)
+
 
             court().create_court(self.SCREEN)
             player().create_player(self.SCREEN, self.SCREEN_HEIGHT, player_one)
@@ -98,9 +98,9 @@ class Main_Game():
             # print('a: ',a)
             player_two = mov().computer_movements(_ball, self.ball_x_dir, player_two)
             self.score_player_one = mov().compute_score(player_one, _ball, self.score_player_one, self.ball_x_dir, True)
-            self.score_player_two = mov().compute_score(player_two, _ball, self.score_player_two, self.ball_x_dir)
-            player().create_score(self.SCREEN, self.score_player_one, self.FONT, (100,15))
-            player().create_score(self.SCREEN, self.score_player_two, self.FONT, (300,15))
+            self.score_player_two = mov().compute_score(player_two, _ball, self.score_player_two, self.ball_x_dir, player_two=True)
+            player().create_score(self.SCREEN, 'You', self.score_player_one, self.FONT, (100,15))
+            player().create_score(self.SCREEN, 'PC',self.score_player_two, self.FONT, (300,15))
 
             # Atualiza o desenho na tela
             pygame.display.update()
