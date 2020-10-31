@@ -1,4 +1,4 @@
-# CrazySnakePong
+# Pyng Pong
 
 It's a retelling of Atari's famous Pong game using the pygame.
 

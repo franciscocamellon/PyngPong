@@ -17,7 +17,7 @@ class Main_Game():
         """ Constructor """
 
         pygame.init()
-        pygame.display.set_caption('Crazy Snake Pong - from Francisco Camello')
+        pygame.display.set_caption('Pyng Pong - from Francisco Camello')
         self.FONTSIZE = 20
         self.FONT = pygame.font.Font('freesansbold.ttf', self.FONTSIZE)
         self.SCREEN_WIDTH = 500
