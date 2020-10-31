@@ -36,36 +36,25 @@ class Main_Game():
     def init_game(self):
         """ Docstring """
 
-        # self.ball_x_pos = ball().ball_position()[0]
-        # self.ball_y_pos = ball().ball_position()[1]
-
         self.ball_x_pos = 245
         self.ball_y_pos = 195
-
-        # print(self.ball_x_pos, self.ball_y_pos)
 
         player_one_pos = player().player_position()
         player_two_pos = player().player_position()
 
-        # print(player_one_pos, player_two_pos)
-
         player_one = pygame.Rect(70, player_one_pos, 5, 50)
         player_two = pygame.Rect((430), player_two_pos, 5, 50)
-        # _ball = pygame.Rect(self.ball_x_pos, self.ball_x_pos, 5, 5)
-        _ball = pygame.Rect(245, 195, 5, 5)
 
-        # print(player_one, player_two)
+        _ball = pygame.Rect(245, 195, 5, 5)
 
         court().create_court(self.SCREEN)
         player().create_player(self.SCREEN, self.SCREEN_HEIGHT, player_one)
         player().create_player(self.SCREEN, self.SCREEN_HEIGHT, player_two)
         ball().create_ball(self.SCREEN, _ball)
 
-
         while True:
             self.SCREEN.fill((0, 0, 0))
 
-            # Checar os eventos do mouse aqui:
             for event in pygame.event.get():
 
                 if event.type == pygame.QUIT:
@@ -76,14 +65,13 @@ class Main_Game():
                     player_one.y = mouseY
                     pygame.mouse.set_visible(1)
 
-
             court().create_court(self.SCREEN)
             player().create_player(self.SCREEN, self.SCREEN_HEIGHT, player_one)
             player().create_player(self.SCREEN, self.SCREEN_HEIGHT, player_two)
             ball().create_ball(self.SCREEN, _ball)
 
             _ball = mov().ball_movement(_ball, self.ball_x_dir, self.ball_y_dir)
-            self.ball_x_dir, self.ball_y_dir = mov().verify_collision( _ball,
+            self.ball_x_dir, self.ball_y_dir = mov().verify_collision(_ball,
                                                                       self.ball_x_dir,
                                                                       self.ball_y_dir)
             new_dir = mov().ball_collision(_ball, player_one, player_two, self.ball_x_dir)
@@ -93,19 +81,17 @@ class Main_Game():
                 self.ball_x_dir = self.ball_x_dir * new_dir
             else:
                 self.ball_x_dir = self.ball_x_dir
-            # self.ball_x_dir = self.ball_x_dir * mov().ball_collision(_ball, player_one, player_two, self.ball_x_dir)
-            # a = mov().ball_collision(_ball, player_one, player_two, self.ball_x_dir)
-            # print('a: ',a)
-            player_two = mov().computer_movements(_ball, self.ball_x_dir, player_two)
-            self.score_player_one = mov().compute_score(player_one, _ball, self.score_player_one, self.ball_x_dir, True)
-            self.score_player_two = mov().compute_score(player_two, _ball, self.score_player_two, self.ball_x_dir, player_two=True)
-            player().create_score(self.SCREEN, 'You', self.score_player_one, self.FONT, (100,15))
-            player().create_score(self.SCREEN, 'PC',self.score_player_two, self.FONT, (300,15))
 
-            # Atualiza o desenho na tela
+            player_two = mov().computer_movements(_ball, self.ball_x_dir, player_two)
+            self.score_player_one = mov().compute_score(
+                player_one, _ball, self.score_player_one, self.ball_x_dir, True)
+            self.score_player_two = mov().compute_score(
+                player_two, _ball, self.score_player_two, self.ball_x_dir, player_two=True)
+            player().create_score(self.SCREEN, 'You', self.score_player_one, self.FONT, (100, 15))
+            player().create_score(self.SCREEN, 'PC', self.score_player_two, self.FONT, (300, 15))
+
             pygame.display.update()
 
-            # Configura 200 atualizações de tela por segundo
             self.FPSCLOCK.tick(self.FPS)
 
 
