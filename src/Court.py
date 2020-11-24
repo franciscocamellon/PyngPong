@@ -1,9 +1,10 @@
 # -*- coding: utf-8 -*-
 
 import pygame
+from random import randint
 
 
-class Tenis_Court():
+class Tennis_Court():
     """ Docstring """
 
     def __init__(self):
@@ -26,127 +27,99 @@ class Tenis_Court():
             screen, self.COLOR, rect, width=self.BORDER_SIZE)
         return court, line
 
-    def constants(self):
-        return self.SCREEN_WIDTH, self.SCREEN_HEIGHT, self.PLAYER_SIZE, self.BORDER_SIZE, self.BORDER_OFFSET, self.COLOR
 
-
-class Pong_Ball(Tenis_Court):
-    """ Docstring """
-
-    def __init__(self):
-        """ Constructor """
-        super().__init__()
-        self.RADIUS = 5
-
-    def create_ball(self, screen, rect):
-        """ Docstring """
-        # ball = pygame.draw.circle(
-        #     screen, self.COLOR, center, self.RADIUS, width=0)
-        pygame.draw.rect(screen, self.COLOR, rect)
-
-    def ball_position(self):
-        """ Docstring """
-        x_pos = self.SCREEN_WIDTH//2 - self.BORDER_SIZE//2
-        y_pos = self.SCREEN_HEIGHT//2 - self.BORDER_SIZE//2
-
-        return x_pos, y_pos
-
-
-class Pong_Player(Tenis_Court):
+class Collisions(Tennis_Court):
     """ Docstring """
 
     def __init__(self):
         """ Constructor """
         super().__init__()
 
-    def create_player(self, screen, height, player):
+    def wall_collision(self, ball):
         """ Docstring """
+        if ball.rect.x >= 445:
+            ball.velocity[0] = -ball.velocity[0]
+        if ball.rect.x <= 55:
+            ball.velocity[0] = -ball.velocity[0]
+        if ball.rect.y > 345:
+            ball.velocity[1] = -ball.velocity[1]
+        if ball.rect.y < 55:
+            ball.velocity[1] = -ball.velocity[1]
 
-        if player.bottom > height - self.BORDER_SIZE:
-            player.bottom = height - self.BORDER_SIZE
-        elif player.top < self.BORDER_SIZE:
-            player.top = self.BORDER_SIZE
-
-        line = pygame.draw.rect(screen, self.COLOR, player)
-        return line
-
-    def player_position(self):
+    def computer_movements(self, ball, player):
         """ Docstring """
-        position = (self.SCREEN_HEIGHT - self.PLAYER_SIZE)//2
-        return position
+        if ball.velocity[0] == 1:
+            if player.rect.centery < ball.rect.centery:
+                player.rect.y += 1
+            else:
+                player.rect.y -= 1
+        return player
+
+    def compute_score(self, player, ball, score, player_one=False, player_two=False):
+        """ Docstring """
+        if player_one and ball.rect.left == 55:
+            score -= score
+            return score
+        elif player_one and ball.rect.right == 445:
+            score += 10
+            return score
+        else:
+            if player_two and ball.rect.left == 55:
+                score += 10
+                return score
+            elif player_two and ball.rect.right == 445:
+                score -= score
+                return score
+            else:
+                return score
 
     def create_score(self, screen, text, score, font, position):
         """ Docstring """
-        score_result = font.render('{0} = {1}'.format(text, score), True, self.COLOR)
+        score_result = font.render(
+            '{0} = {1}'.format(text, score), True, self.COLOR)
         score_result_rect = score_result.get_rect()
         score_result_rect.topleft = (position)
         return screen.blit(score_result, score_result_rect)
 
 
+class Paddle(pygame.sprite.Sprite):
+    # This class represents a paddle. It derives from the "Sprite" class in Pygame.
 
-
-class Movements(Tenis_Court):
-    """ Docstring """
-
-    def __init__(self):
-        """ Constructor """
+    def __init__(self, color, x, y):
+        # Call the parent class (Sprite) constructor
         super().__init__()
+        self.image = pygame.Surface(
+            [Tennis_Court().BORDER_SIZE, Tennis_Court().PLAYER_SIZE])
+        self.image.fill((0, 0, 0))
+        self.image.set_colorkey((0, 0, 0))
+        pygame.draw.rect(self.image, color, [
+                         0, 0, Tennis_Court().BORDER_SIZE, Tennis_Court().PLAYER_SIZE])
+        self.rect = self.image.get_rect()
+        self.rect.x = x
+        self.rect.y = y
 
-    def ball_movement(self, ball, x_dir, y_dir):
-        """ Docstring """
-        ball.x += x_dir
-        ball.y += y_dir
-        return ball
 
-    def verify_collision(self, ball, x_dir, y_dir):
-        """ Docstring """
-        if ball.top == (self.COURT_OFFSET + self.BORDER_SIZE) or \
-            ball.bottom == (self.SCREEN_HEIGHT - self.BORDER_SIZE + self.COURT_OFFSET):
-            y_dir *= -1
-        if ball.left == (self.COURT_OFFSET + self.BORDER_SIZE) or \
-            ball.right == (self.SCREEN_WIDTH - self.BORDER_SIZE + self.COURT_OFFSET):
-            x_dir *= -1
-        return x_dir, y_dir
+class Ball(pygame.sprite.Sprite):
+    # This class represents a ball. It derives from the "Sprite" class in Pygame.
 
-    def computer_movements(self, ball, x_dir, player):
-        """ Docstring """
-        if x_dir == 1:
-            if player.centery < ball.centery:
-                player.y += 1
-            else:
-                player.y -= 1
-        return player
+    def __init__(self, color, width, height):
+        # Call the parent class (Sprite) constructor
+        super().__init__()
+        self.image = pygame.Surface(
+            [Tennis_Court().BORDER_SIZE, Tennis_Court().BORDER_SIZE])
+        self.image.fill((0, 0, 0))
+        self.image.set_colorkey((0, 0, 0))
+        pygame.draw.rect(self.image, color, [
+                         0, 0, Tennis_Court().BORDER_SIZE, Tennis_Court().BORDER_SIZE])
+        self.velocity = [1, 1]
+        self.rect = self.image.get_rect()
+        self.rect.x = Tennis_Court().SCREEN_WIDTH // 2
+        self.rect.y = Tennis_Court().SCREEN_HEIGHT // 2
 
-    def ball_collision(self, ball, player_one, player_two, x_dir):
-        """ Docstring """
-        if x_dir == -1 and player_one.right == ball.left and player_one.top < ball.top and player_one.bottom > ball.bottom:
-            return -1
-        elif x_dir == 1 and player_two.left == ball.right and player_two.top < ball.top and player_two.bottom > ball.bottom:
-            return -1
+    def update(self):
+        self.rect.x += self.velocity[0]
+        self.rect.y += self.velocity[1]
 
-    def compute_score(self, player, ball, score, x_dir, player_one=False, player_two=False):
-        """ Docstring """
-        if player_one and ball.left == self.BORDER_SIZE + 50:
-            score -= score
-            return score
-        elif player_one and ball.right == self.SCREEN_WIDTH - self.BORDER_SIZE + 50:
-            score += 10
-            return score
-        #verify a ball collision
-        elif player_one and x_dir == 1 and player.right == ball.left and player.top < ball.top and player.bottom > ball.bottom:
-            score += 1
-            return score
-        else:
-
-            if player_two and ball.left == self.BORDER_SIZE + 50:
-                score += 10
-                return score
-            elif player_two and ball.right == self.SCREEN_WIDTH - self.BORDER_SIZE + 50:
-                score -= score
-                return score
-            #verify a ball collision
-            elif player_two and x_dir == -1 and player.left == ball.right and player.top < ball.top and player.bottom > ball.bottom:
-                score += 1
-                return score
-            else:
-                return score
+    def bounce(self):
+        self.velocity[0] = -self.velocity[0]
+        self.velocity[1] = randint(-1, 1)
